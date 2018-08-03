@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         LyndaLinkerScript
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.4
 // @description  This script allows multiple users to watch videos from lynda.com for free with help of assisting server
 // @author       KuxaBeast
 // @grant        none
@@ -100,10 +100,6 @@
       videoParent.removeChild(videoParent.getElementsByClassName('cplayer')[0])
     }
 
-    videoParent.addEventListener("resize", event => {
-      console.log("Resized YOU FUCKER!")
-    })
-
     //console.log(videoParent.getElementsByTagName('video'))
 
     let player = document.createElement('video')
@@ -115,11 +111,23 @@
     player.autoplay = true
 
     let source = document.createElement('source')
-    source.src = solverAdress + currenturl
+    source.src = getVideoUrl(solverAdress, currenturl, "720")
     source.type = 'video/mp4'
     player.appendChild(source)
 
     videoParent.appendChild(player)
+  }
+
+  function getVideoUrl(solver, page_url, quality) {
+    let out = solver
+    if (!out.endsWith("/")) out += "/"
+    out += "?"
+    out += "courseid=" + page_url.split('/')[5]
+    out += "&"
+    out += "videoid=" + page_url.split("/")[6].split(".")[0]
+    out += "&"
+    out += "qual=" + quality
+    return out
   }
 
   window.setInterval(function () {
