@@ -10,7 +10,7 @@ class LyndaHTTPRequestHandler(BaseHTTPRequestHandler):
 
     query = urllib.parse.parse_qs(self.path[2:])
 
-    response_addr = linker.get_link(query['courseid'][0], query['videoid'][0], query['qual'])
+    response_addr = linker.get_link(query['courseid'][0], query['videoid'][0], query['qual'][0])
 
     if response_addr:
       self.send_response(302)

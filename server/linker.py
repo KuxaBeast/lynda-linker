@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import youtube_dl
 import sys
 from http import cookiejar
+import re
 
 class LyndaAuth(object):
   def __init__(self, cookies="lynda.txt"):
@@ -50,6 +51,7 @@ class LyndaLinker(object):
       return data["url"]
       #ydl.download([url])
 
+  # deprecated
   def checkUrl(self, url):
     # try:
     #   url.index("https://www.lynda.com/")
@@ -77,8 +79,11 @@ class LyndaLinker(object):
     else:
       print("Address not valid", file=sys.stderr)
       return None
+
+  def checkRequest(self, courseid, videoid, quality):
+    return re.match("^\d+-\d$", videoid) and re.match("^\d+$", courseid) and re.match("^\d{3}$", quality)
     
-  def get_link(self, courseid, videoid, qual = None):
+  def get_link(self, courseid, videoid, qual = "720"):
     qual_opts = {
       "360": "best[height=360]",
       "540": "best[height=540]",
@@ -88,6 +93,10 @@ class LyndaLinker(object):
     org = "organisation.org"
     lib_card_num = "yournum"
     lib_card_pin = "yourpin"
+
+    if not self.checkRequest(courseid, videoid, qual):
+      print("Address not valid", file=sys.stderr)
+      return None
 
     try:
       quality = qual_opts[qual]
